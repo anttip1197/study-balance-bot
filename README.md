@@ -61,8 +61,8 @@ Replace `your_eleven_labs_api_key_here` and `your_google_api_key_here` with your
 
 ## 4. Launch Application:
     
-    Bash
     python chatbot.py
+    
     The server will run on http://127.0.0.1:5000.
     
 ##  Project Structure
