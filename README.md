@@ -47,22 +47,48 @@ Replace `your_eleven_labs_api_key_here` and `your_google_api_key_here` with your
 
 ### Running the Bot
 
-To run the bot, follow these commands:
+## 2. Install Dependencies:
 
-1. Install the required packages:
+    pip install flask flask-cors elevenlabs python-dotenv google-genai
 
-   ```bash
-   npm install
-   ```
+## 3. Configure Environment:
 
-2. Start the bot:
+    Create a .env file in the root directory:
+    
+    Plaintext
+    ELEVENLABS_API_KEY=your_key_here
+    GEMINI_API_KEY=your_key_here
 
-   ```bash
-   npm start
-   ```
-
-You should see the bot running in your terminal. 
-
-### Support
-
-For any issues or feature requests, please open an issue in the GitHub repository.
+## 4. Launch Application:
+    
+    Bash
+    python chatbot.py
+    The server will run on http://127.0.0.1:5000.
+    
+    📂 Project Structure
+    chatbot.py: Flask backend managing AI logic and API orchestrations.
+    
+    index.html: Clean, responsive frontend chat interface.
+    
+    static/: Local cache for generated audio .mp3 files.
+    
+    .env: Secure storage for sensitive API credentials.
+    
+    🤝 Design Principles
+    Based on research for the HTI-560 course, the bot adheres to:
+    
+    Self-Reflection: Encouraging users to explore their own workload feelings.
+    
+    Non-Judgmental Tone: Creating a safe space for students to vent.
+    
+    Brevity: Limiting output tokens to ensure clear, complete voice delivery.
+    
+    👥 Project Team
+    Antti Parviainen
+    
+    Eveliina Knuutila
+    
+    Madina Khasaeva
+    
+    Sirke Sahranto
+"@
