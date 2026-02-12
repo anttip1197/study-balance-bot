@@ -27,9 +27,8 @@ You will need to set up two API keys for the bot to function properly:
    - Retrieve your API key from the dashboard and store it securely.
 
 2. **Google API Key**:
-   - Go to the Google Cloud Console at [console.cloud.google.com](https://console.cloud.google.com).
-   - Create a new project and enable the required APIs.
-   - Generate your API key from the credentials page.
+   - Go to https://aistudio.google.com/
+   - Generate your API key and copy it, don't lose it (this is for your personal use)
 
 ### Configuration
 
