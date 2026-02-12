@@ -65,17 +65,13 @@ Replace `your_eleven_labs_api_key_here` and `your_google_api_key_here` with your
     python chatbot.py
     The server will run on http://127.0.0.1:5000.
     
-    📂 Project Structure
-    chatbot.py: Flask backend managing AI logic and API orchestrations.
-    
-    index.html: Clean, responsive frontend chat interface.
-    
-    static/: Local cache for generated audio .mp3 files.
-    
-    .env: Secure storage for sensitive API credentials.
-    
-
-## 4. 👥 Project Team
+##  Project Structure
+    - chatbot.py: Flask backend managing AI logic and API orchestrations.
+    - index.html: Clean, responsive frontend chat interface.
+    - static/: Local cache for generated audio .mp3 files.
+    - .env: Secure storage for sensitive API credentials.
+   
+## 👥 Project Team
     
     Antti Parviainen
     Eveliina Knuutila
