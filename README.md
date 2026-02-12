@@ -74,21 +74,11 @@ Replace `your_eleven_labs_api_key_here` and `your_google_api_key_here` with your
     
     .env: Secure storage for sensitive API credentials.
     
-    🤝 Design Principles
-    Based on research for the HTI-560 course, the bot adheres to:
+
+## 4. 👥 Project Team
     
-    Self-Reflection: Encouraging users to explore their own workload feelings.
-    
-    Non-Judgmental Tone: Creating a safe space for students to vent.
-    
-    Brevity: Limiting output tokens to ensure clear, complete voice delivery.
-    
-    👥 Project Team
     Antti Parviainen
-    
     Eveliina Knuutila
-    
     Madina Khasaeva
-    
     Sirke Sahranto
 "@
