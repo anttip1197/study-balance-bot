@@ -5,21 +5,18 @@
 
 ## Installation
 
-### Install Git Bash
+## Install Git Bash
 1. Download the Git Bash installer from https://gitforwindows.org/
 2. Run the installer and follow the installation instructions.
 3. Once installed, you can use Git Bash to run the scripts and commands needed for the Study Balance Bot.
 
-# Additional Information
+## Clone Repo to yout PC
 
    git clone https://github.com/anttip1197/study-balance-bot.git
-   ```
 
-3. Change to the directory:
+   Change to the directory:
 
-   ```bash
    cd study-balance-bot
-   ```
 
 ### Setting Up API Keys
 
