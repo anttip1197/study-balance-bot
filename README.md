@@ -36,7 +36,7 @@ You will need to set up two API keys for the bot to function properly:
 
 ### Configuration
 
-Create a `.env` file in the root directory of the project with the following content:
+Edit the `.env` file in the root directory of the project with the following content:
 
 ```env
 ELEVEN_LABS_API_KEY=your_eleven_labs_api_key_here
