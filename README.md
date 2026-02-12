@@ -1,67 +1,71 @@
-$readmeContent = @"
-# Study-Work Balance Support Chatbot
-**Course Project: HTI-560-2026**
+# Study Balance Bot
 
-A supportive and empathetic conversational chatbot designed for students balancing the pressures of work and academia. This project leverages the **Gemini 2.0 Flash** model for high-speed, intelligent emotional validation and **ElevenLabs** for warm, human-like voice synthesis.
+## Setup Instructions
 
-## 🌟 Key Features
-- 💬 **Empathetic Dialogue**: Focuses on emotional validation rather than direct prescriptive advice.
-- 🔊 **Voice Integration**: Automatic text-to-speech using the ElevenLabs 'Rachel' voice.
-- 🧠 **Smart Context**: Maintains a session-based conversation history for more meaningful interactions.
-- ⚡ **Optimized Responses**: Prompt engineered to keep replies warm and concise (2-4 sentences) to avoid sentence cut-offs.
+### Prerequisites
 
-## ⚙️ Prerequisites
-- **Python 3.9+**
-- **ElevenLabs API Key**
-- **Google Gemini API Key** (Obtain from [Google AI Studio](https://aistudio.google.com/))
+Before you begin, ensure you have the following:
 
-## 🛠️ Installation & Setup
-1. **Clone & Navigate**:
+- **Node.js**: Make sure you have Node.js installed. You can download it from [nodejs.org](https://nodejs.org/).
+- **Git**: Ensure that Git is installed on your machine for cloning the repository.
+
+### Clone Instructions
+
+1. Open your terminal.
+2. Clone the repository by running:
+
    ```bash
-    cd elevenlabs
-   
-## 2. Install Dependencies:
+   git clone https://github.com/anttip1197/study-balance-bot.git
+   ```
 
-    pip install flask flask-cors elevenlabs python-dotenv google-genai
+3. Change to the directory:
 
-## 3. Configure Environment:
+   ```bash
+   cd study-balance-bot
+   ```
 
-    Create a .env file in the root directory:
-    
-    Plaintext
-    ELEVENLABS_API_KEY=your_key_here
-    GEMINI_API_KEY=your_key_here
+### Setting Up API Keys
 
-## 4. Launch Application:
-    
-    Bash
-    python chatbot.py
-    The server will run on http://127.0.0.1:5000.
-    
-    📂 Project Structure
-    chatbot.py: Flask backend managing AI logic and API orchestrations.
-    
-    index.html: Clean, responsive frontend chat interface.
-    
-    static/: Local cache for generated audio .mp3 files.
-    
-    .env: Secure storage for sensitive API credentials.
-    
-    🤝 Design Principles
-    Based on research for the HTI-560 course, the bot adheres to:
-    
-    Self-Reflection: Encouraging users to explore their own workload feelings.
-    
-    Non-Judgmental Tone: Creating a safe space for students to vent.
-    
-    Brevity: Limiting output tokens to ensure clear, complete voice delivery.
-    
-    👥 Project Team
-    Antti Parviainen
-    
-    Eveliina Knuutila
-    
-    Madina Khasaeva
-    
-    Sirke Sahranto
-"@
+You will need to set up two API keys for the bot to function properly:
+
+1. **ElevenLabs API Key**:
+   - Sign up at [ElevenLabs](https://www.elevenlabs.io).
+   - Retrieve your API key from the dashboard and store it securely.
+
+2. **Google API Key**:
+   - Go to the Google Cloud Console at [console.cloud.google.com](https://console.cloud.google.com).
+   - Create a new project and enable the required APIs.
+   - Generate your API key from the credentials page.
+
+### Configuration
+
+Create a `.env` file in the root directory of the project with the following content:
+
+```env
+ELEVEN_LABS_API_KEY=your_eleven_labs_api_key_here
+GOOGLE_API_KEY=your_google_api_key_here
+```
+
+Replace `your_eleven_labs_api_key_here` and `your_google_api_key_here` with your actual API keys.
+
+### Running the Bot
+
+To run the bot, follow these commands:
+
+1. Install the required packages:
+
+   ```bash
+   npm install
+   ```
+
+2. Start the bot:
+
+   ```bash
+   npm start
+   ```
+
+You should see the bot running in your terminal. 
+
+### Support
+
+For any issues or feature requests, please open an issue in the GitHub repository.
