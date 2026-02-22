@@ -1,12 +1,18 @@
-from flask import Flask, send_from_directory
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
-@app.route('/')
-def serve_index():
-    return send_from_directory('', 'index.html')
+@app.route('/chat')
+def chat():
+    return "Chat endpoint"
 
-# Add your existing routes here
+@app.route('/audio/<filename>")
+def audio(filename):
+    return "Audio endpoint for: " + filename
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run()
