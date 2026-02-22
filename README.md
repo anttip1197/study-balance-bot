@@ -43,6 +43,10 @@ source venv/bin/activate
 ### 3. Install dependencies
 
 ```bash
+# Upgrade pip to the latest version
+python -m pip install --upgrade pip
+
+# Install requirements
 pip install -r requirements.txt
 ```
 
