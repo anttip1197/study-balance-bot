@@ -1,18 +1,26 @@
-from flask import Flask, render_template
+# chat-bot.py
 
-app = Flask(__name__)
+import logging
+import os
 
-@app.route('/chat')
-def chat():
-    return "Chat endpoint"
+# Enable debug mode
+DEBUG_MODE = True
 
-@app.route('/audio/<filename>")
-def audio(filename):
-    return "Audio endpoint for: " + filename
+# Configure logging for error logging
+logging.basicConfig(level=logging.DEBUG if DEBUG_MODE else logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    handlers=[
+                        logging.FileHandler('app.log'),
+                        logging.StreamHandler()
+                    ])
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+# Example function demonstrating error logging
 
-if __name__ == '__main__':
-    app.run()
+def some_function():
+    try:
+        # Your code logic here
+        pass
+    except Exception as e:
+        logging.error(f'Error occurred: {e}')
+
+# Rest of your chatbot code goes here...
