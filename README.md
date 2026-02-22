@@ -1,71 +1,40 @@
 # Study Balance Bot
 
-## Requirements
-- Python 3.8 or higher
+## Installation Instructions
 
-## Installation
+Follow these steps to set up the Study Balance Bot:
 
-## Install Git Bash
-1. Download the Git Bash installer from https://gitforwindows.org/
-2. Run the installer and follow the installation instructions.
-3. Once installed, you can use Git Bash to run the scripts and commands needed for the Study Balance Bot.
-
-## Clone Repo to your PC
-
+1. **Clone the Repository**  
+   Clone this repository to your local machine using the following command:
+   ```bash
    git clone https://github.com/anttip1197/study-balance-bot.git
+   ```
 
-   Change to the directory:
-
+2. **Navigate to the Project Directory**  
+   Change to the project directory:
+   ```bash
    cd study-balance-bot
+   ```
 
-### Setting Up API Keys
+3. **Install Python Dependencies**  
+   Make sure you have Python and pip installed on your system. You can install the required dependencies by running:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-You will need to set up two API keys for the bot to function properly:
+4. **Environment Configuration**  
+   Configure your environment variables as needed. Refer to the example configurations in the project for guidance.
 
-1. **ElevenLabs API Key**:
-   - Sign up at [ElevenLabs](https://www.elevenlabs.io).
-   - Retrieve your API key from the dashboard and store it securely.
+5. **Run the Bot**  
+   Once everything is set up, you can run the bot with:
+   ```bash
+   python bot.py
+   ```
 
-### Configuration
+## Dependencies
+- ElevenLabs
 
-Edit the `.env` file in the root directory of the project with the following content:
+Make sure to check the repository for updates on dependencies and usage.
 
-```env
-ELEVEN_LABS_API_KEY=your_eleven_labs_api_key_here
-```
-
-Replace `your_eleven_labs_api_key_here` and `your_google_api_key_here` with your actual API keys.
-
-### Running the Bot
-
-## 2. Install Dependencies:
-
-    pip install flask flask-cors elevenlabs python-dotenv google-genai
-
-## 3. Configure Environment:
-
-    Create a .env file in the root directory:
-    
-    Plaintext
-    ELEVENLABS_API_KEY=your_key_here
-    GEMINI_API_KEY=your_key_here
-
-## 4. Launch Application:
-    
-    python chatbot.py
-    
-    The server will run on http://127.0.0.1:5000.
-    
-##  Project Structure
-    - chatbot.py: Flask backend managing AI logic and API orchestrations.
-    - index.html: Clean, responsive frontend chat interface.
-    - static/: Local cache for generated audio .mp3 files.
-    - .env: Secure storage for sensitive API credentials.
-   
-## 👥 Project Team
-    
-    Antti Parviainen
-    Eveliina Knuutila
-    Madina Khasaeva
-    Sirke Sahranto
-"@
+## License
+This project is licensed under the MIT License.
