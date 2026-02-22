@@ -135,6 +135,3 @@ Browser Web Speech API reads it aloud
 | `GROQ_API_KEY` | Your Groq API key from console.groq.com | ✅ Yes |
 
 ---
-
-
-*Built with ❤️ to help students find balance*
