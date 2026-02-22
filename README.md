@@ -24,7 +24,7 @@ A compassionate AI chatbot designed to help students navigate the challenges of 
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/study-balance-bot.git
+git clone https://github.com/anttip1197/study-balance-bot.git
 cd study-balance-bot
 ```
 
