@@ -10,7 +10,7 @@
 2. Run the installer and follow the installation instructions.
 3. Once installed, you can use Git Bash to run the scripts and commands needed for the Study Balance Bot.
 
-## Clone Repo to yout PC
+## Clone Repo to your PC
 
    git clone https://github.com/anttip1197/study-balance-bot.git
 
@@ -26,17 +26,12 @@ You will need to set up two API keys for the bot to function properly:
    - Sign up at [ElevenLabs](https://www.elevenlabs.io).
    - Retrieve your API key from the dashboard and store it securely.
 
-2. **Google API Key**:
-   - Go to https://aistudio.google.com/
-   - Generate your API key and copy it, don't lose it (this is for your personal use)
-
 ### Configuration
 
 Edit the `.env` file in the root directory of the project with the following content:
 
 ```env
 ELEVEN_LABS_API_KEY=your_eleven_labs_api_key_here
-GOOGLE_API_KEY=your_google_api_key_here
 ```
 
 Replace `your_eleven_labs_api_key_here` and `your_google_api_key_here` with your actual API keys.
