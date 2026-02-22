@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Study-Work Balance Support Bot</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -30,25 +26,173 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
         }
 
         .chat-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 25px;
-            text-align: center;
+            padding: 18px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
         }
 
-        .chat-header h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
+        .chat-header-text h1 { font-size: 20px; margin-bottom: 2px; }
+        .chat-header-text p  { font-size: 12px; opacity: 0.85; }
+
+        .header-controls { display: flex; align-items: center; gap: 10px; }
+
+        /* Voice settings button */
+        .voice-settings-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+        .voice-settings-btn:hover { background: rgba(255,255,255,0.35); }
+
+        /* TTS toggle */
+        .tts-toggle { display: flex; align-items: center; gap: 7px; font-size: 13px; cursor: pointer; user-select: none; }
+        .tts-toggle input { display: none; }
+        .toggle-track {
+            width: 38px; height: 22px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 11px; position: relative;
+            transition: background 0.3s;
+        }
+        .toggle-track::after {
+            content: '';
+            position: absolute;
+            width: 16px; height: 16px;
+            background: white; border-radius: 50%;
+            top: 3px; left: 3px;
+            transition: transform 0.3s;
+        }
+        #ttsCheckbox:checked + .toggle-track { background: rgba(255,255,255,0.6); }
+        #ttsCheckbox:checked + .toggle-track::after { transform: translateX(16px); }
+
+        /* ── Voice Settings Panel ── */
+        .voice-panel {
+            position: absolute;
+            top: 70px; right: 20px;
+            width: 320px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            z-index: 100;
+            overflow: hidden;
+            display: none;
+            animation: slideDown 0.2s ease;
+        }
+        .voice-panel.open { display: block; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
-        .chat-header p {
+        .voice-panel-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 14px 18px;
             font-size: 14px;
-            opacity: 0.9;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .voice-panel-close {
+            background: none; border: none; color: white;
+            font-size: 18px; cursor: pointer; line-height: 1;
+            opacity: 0.8;
+        }
+        .voice-panel-close:hover { opacity: 1; }
+
+        .voice-panel-body { padding: 16px; }
+
+        .setting-row { margin-bottom: 16px; }
+        .setting-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .setting-label span { color: #667eea; font-weight: 700; }
+
+        /* Voice selector */
+        .voice-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 13px;
+            outline: none;
+            cursor: pointer;
+            background: white;
+            color: #333;
+            transition: border-color 0.2s;
+        }
+        .voice-select:focus { border-color: #667eea; }
+
+        /* Sliders */
+        .slider-wrap { position: relative; padding: 4px 0; }
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%; height: 5px;
+            border-radius: 3px;
+            background: #e0e0e0;
+            outline: none;
+            cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            cursor: pointer;
+            box-shadow: 0 1px 4px rgba(102,126,234,0.4);
+        }
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 5px; border-radius: 3px;
         }
 
+        .slider-ticks {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #aaa;
+            margin-top: 3px;
+        }
+
+        /* Test button */
+        .test-btn {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.2s, transform 0.1s;
+            margin-top: 4px;
+        }
+        .test-btn:hover { opacity: 0.9; transform: scale(1.02); }
+        .test-btn:active { transform: scale(0.98); }
+
+        /* ── Chat area ── */
         .chat-messages {
             flex: 1;
             padding: 20px;
@@ -56,306 +200,528 @@
             background: #f5f5f5;
         }
 
-        .message {
-            margin-bottom: 20px;
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .message.user {
-            justify-content: flex-end;
-        }
+        .message { margin-bottom: 18px; display: flex; align-items: flex-start; }
+        .message.user { justify-content: flex-end; }
 
         .message-content {
-            max-width: 70%;
-            padding: 15px 20px;
+            max-width: 72%;
+            padding: 13px 17px;
             border-radius: 18px;
-            position: relative;
         }
-
         .message.bot .message-content {
-            background: white;
-            color: #333;
+            background: white; color: #333;
             border-bottom-left-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
         }
-
         .message.user .message-content {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border-bottom-right-radius: 4px;
         }
 
-        .audio-player {
-            margin-top: 10px;
-            width: 100%;
-        }
-
-        .chat-input-container {
-            padding: 20px;
-            background: white;
-            border-top: 1px solid #e0e0e0;
-        }
-
-        .chat-input-wrapper {
+        /* Speaking indicator */
+        .speaking-indicator {
+            margin-top: 8px;
             display: flex;
-            gap: 10px;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #667eea;
         }
-
-        .chat-input {
-            flex: 1;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
-            font-size: 15px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-
-        .chat-input:focus {
-            border-color: #667eea;
-        }
-
-        .send-button {
-            padding: 15px 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            font-size: 15px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .send-button:hover {
-            transform: scale(1.05);
-        }
-
-        .send-button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: scale(1);
-        }
-
-        .typing-indicator {
-            display: none;
-            padding: 15px 20px;
-            background: white;
-            border-radius: 18px;
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            width: fit-content;
-        }
-
-        .typing-indicator.active {
-            display: block;
-        }
-
-        .typing-indicator span {
-            height: 10px;
-            width: 10px;
+        .speaking-dots span {
+            display: inline-block;
+            width: 5px; height: 5px;
             background: #667eea;
             border-radius: 50%;
-            display: inline-block;
-            margin: 0 2px;
+            animation: pulse 1.2s infinite;
+        }
+        .speaking-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .speaking-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes pulse {
+            0%,60%,100% { transform: scale(1); opacity: 0.5; }
+            30%          { transform: scale(1.5); opacity: 1; }
+        }
+        .stop-btn {
+            font-size: 11px; padding: 2px 8px;
+            border: 1px solid #667eea; border-radius: 8px;
+            background: none; color: #667eea; cursor: pointer;
+        }
+        .stop-btn:hover { background: #667eea; color: white; }
+
+        /* Coqui WAV player (fallback) */
+        .audio-player-wrap { margin-top: 10px; display: flex; align-items: center; gap: 8px; }
+        .play-btn {
+            width: 30px; height: 30px; border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.15s;
+        }
+        .play-btn:hover { transform: scale(1.1); }
+        .play-btn svg { fill: white; width: 11px; height: 11px; }
+        .audio-label { font-size: 12px; color: #667eea; cursor: pointer; }
+        .audio-progress-container { flex: 1; height: 4px; background: #e0e0e0; border-radius: 2px; cursor: pointer; }
+        .audio-progress-bar { height: 100%; background: linear-gradient(90deg,#667eea,#764ba2); border-radius: 2px; width: 0%; }
+        .audio-time { font-size: 11px; color: #999; white-space: nowrap; }
+
+        /* Quick actions */
+        .quick-actions {
+            padding: 10px 20px; display: flex; gap: 8px; flex-wrap: wrap;
+            background: white; border-top: 1px solid #e0e0e0; flex-shrink: 0;
+        }
+        .quick-action-btn {
+            padding: 7px 14px; background: #f0f0f0;
+            border: 1px solid #ddd; border-radius: 15px;
+            font-size: 13px; cursor: pointer; transition: all 0.2s;
+        }
+        .quick-action-btn:hover { background: #667eea; color: white; border-color: #667eea; }
+
+        .chat-input-container { padding: 14px 20px; background: white; border-top: 1px solid #e0e0e0; flex-shrink: 0; }
+        .chat-input-wrapper { display: flex; gap: 10px; }
+        .chat-input {
+            flex: 1; padding: 12px 18px;
+            border: 2px solid #e0e0e0; border-radius: 25px;
+            font-size: 15px; outline: none; transition: border-color 0.3s;
+        }
+        .chat-input:focus { border-color: #667eea; }
+        .send-button {
+            padding: 12px 26px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white; border: none; border-radius: 25px;
+            font-size: 15px; cursor: pointer; transition: transform 0.2s;
+        }
+        .send-button:hover { transform: scale(1.05); }
+        .send-button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .typing-indicator {
+            display: none; padding: 13px 17px;
+            background: white; border-radius: 18px; border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08); width: fit-content;
+        }
+        .typing-indicator.active { display: block; }
+        .typing-indicator span {
+            height: 8px; width: 8px; background: #667eea;
+            border-radius: 50%; display: inline-block; margin: 0 2px;
             animation: typing 1.4s infinite;
         }
-
-        .typing-indicator span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-indicator span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
         @keyframes typing {
-            0%, 60%, 100% {
-                transform: translateY(0);
-            }
-            30% {
-                transform: translateY(-10px);
-            }
+            0%,60%,100% { transform: translateY(0); }
+            30%          { transform: translateY(-7px); }
         }
 
-        .quick-actions {
-            padding: 10px 20px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            background: white;
-            border-top: 1px solid #e0e0e0;
-        }
-
-        .quick-action-btn {
-            padding: 8px 15px;
-            background: #f0f0f0;
-            border: 1px solid #ddd;
-            border-radius: 15px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .quick-action-btn:hover {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-
-        .welcome-message {
-            text-align: center;
-            padding: 40px 20px;
-            color: #666;
-        }
-
-        .welcome-message h2 {
-            color: #667eea;
-            margin-bottom: 15px;
-        }
+        .welcome-message { text-align: center; padding: 40px 20px; color: #666; }
+        .welcome-message h2 { color: #667eea; margin-bottom: 12px; }
     </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">
+<div class="chat-container">
+
+    <!-- Header -->
+    <div class="chat-header">
+        <div class="chat-header-text">
             <h1>Study-Work Balance Support</h1>
             <p>A supportive space for students balancing work and studies</p>
         </div>
-
-        <div class="chat-messages" id="chatMessages">
-            <div class="welcome-message">
-                <h2>Welcome! 👋</h2>
-                <p>I'm here to support you as you balance your studies and work.</p>
-                <p>Feel free to share what's on your mind, or use the quick actions below to get started.</p>
-            </div>
-        </div>
-
-        <div class="quick-actions" id="quickActions">
-            <button class="quick-action-btn" onclick="sendQuickMessage('I feel overwhelmed with everything')">Feeling overwhelmed</button>
-            <button class="quick-action-btn" onclick="sendQuickMessage('I lack motivation to study')">Low motivation</button>
-            <button class="quick-action-btn" onclick="sendQuickMessage('I struggle to take breaks')">Difficulty slowing down</button>
-            <button class="quick-action-btn" onclick="sendQuickMessage('I need to talk about my workload')">Talk about workload</button>
-        </div>
-
-        <div class="chat-input-container">
-            <div class="chat-input-wrapper">
-                <input 
-                    type="text" 
-                    class="chat-input" 
-                    id="messageInput" 
-                    placeholder="Share what's on your mind..."
-                    onkeypress="handleKeyPress(event)"
-                >
-                <button class="send-button" id="sendButton" onclick="sendMessage()">Send</button>
-            </div>
+        <div class="header-controls">
+            <button class="voice-settings-btn" onclick="toggleVoicePanel()">
+                🎛 Voice Settings
+            </button>
+            <label class="tts-toggle">
+                <input type="checkbox" id="ttsCheckbox" checked>
+                <span class="toggle-track"></span>
+                🔊
+            </label>
         </div>
     </div>
 
-    <script>
-        const chatMessages = document.getElementById('chatMessages');
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
-        const sessionId = 'session_' + Date.now();
+    <!-- Voice Settings Panel -->
+    <div class="voice-panel" id="voicePanel">
+        <div class="voice-panel-header">
+            🎛 Voice Settings
+            <button class="voice-panel-close" onclick="toggleVoicePanel()">✕</button>
+        </div>
+        <div class="voice-panel-body">
 
-        function addMessage(content, isUser, audioUrl = null) {
-            // Remove welcome message if it exists
-            const welcomeMsg = document.querySelector('.welcome-message');
-            if (welcomeMsg) {
-                welcomeMsg.remove();
+            <div class="setting-row">
+                <div class="setting-label">Voice</div>
+                <select class="voice-select" id="voiceSelect" onchange="saveSettings()">
+                    <option value="">Loading voices…</option>
+                </select>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-label">
+                    Speed
+                    <span id="rateVal">1.0×</span>
+                </div>
+                <div class="slider-wrap">
+                    <input type="range" id="rateSlider" min="0.5" max="2" step="0.05" value="1.0"
+                           oninput="updateLabel('rateVal', this.value, '×'); saveSettings()">
+                    <div class="slider-ticks"><span>0.5× slow</span><span>1.0× normal</span><span>2.0× fast</span></div>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-label">
+                    Pitch
+                    <span id="pitchVal">1.0</span>
+                </div>
+                <div class="slider-wrap">
+                    <input type="range" id="pitchSlider" min="0.5" max="2" step="0.05" value="1.0"
+                           oninput="updateLabel('pitchVal', this.value, ''); saveSettings()">
+                    <div class="slider-ticks"><span>0.5 deep</span><span>1.0 normal</span><span>2.0 high</span></div>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-label">
+                    Volume
+                    <span id="volVal">100%</span>
+                </div>
+                <div class="slider-wrap">
+                    <input type="range" id="volSlider" min="0" max="1" step="0.05" value="1"
+                           oninput="updateLabel('volVal', Math.round(this.value*100), '%'); saveSettings()">
+                    <div class="slider-ticks"><span>0% mute</span><span>50%</span><span>100%</span></div>
+                </div>
+            </div>
+
+            <button class="test-btn" onclick="testVoice()">▶ Test Voice</button>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-messages" id="chatMessages">
+        <div class="welcome-message">
+            <h2>Welcome! 👋</h2>
+            <p>I'm here to support you as you balance your studies and work.</p>
+            <p>Use <strong>🎛 Voice Settings</strong> to customise how I sound.</p>
+        </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div class="quick-actions">
+        <button class="quick-action-btn" onclick="sendQuickMessage('I feel overwhelmed with everything')">Feeling overwhelmed</button>
+        <button class="quick-action-btn" onclick="sendQuickMessage('I lack motivation to study')">Low motivation</button>
+        <button class="quick-action-btn" onclick="sendQuickMessage('I struggle to take breaks')">Difficulty slowing down</button>
+        <button class="quick-action-btn" onclick="sendQuickMessage('I need to talk about my workload')">Talk about workload</button>
+    </div>
+
+    <!-- Input -->
+    <div class="chat-input-container">
+        <div class="chat-input-wrapper">
+            <input type="text" class="chat-input" id="messageInput"
+                   placeholder="Share what's on your mind…"
+                   onkeypress="handleKeyPress(event)">
+            <button class="send-button" id="sendButton" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+</div><!-- .chat-container -->
+
+<script>
+    const BACKEND      = 'http://localhost:5000';
+    const chatMessages = document.getElementById('chatMessages');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton   = document.getElementById('sendButton');
+    const ttsCheckbox  = document.getElementById('ttsCheckbox');
+    const sessionId    = 'session_' + Date.now();
+
+    let ttsMode      = 'none';
+    let voicesList   = [];
+    let panelOpen    = false;
+
+    // ── Voice settings (persisted to localStorage) ───────────────────────────
+    let voiceSettings = {
+        voiceURI: '',
+        rate:     1.0,
+        pitch:    1.0,
+        volume:   1.0
+    };
+
+    function loadSettings() {
+        try {
+            const saved = localStorage.getItem('voiceSettings');
+            if (saved) voiceSettings = { ...voiceSettings, ...JSON.parse(saved) };
+        } catch {}
+        // Apply to sliders
+        document.getElementById('rateSlider').value  = voiceSettings.rate;
+        document.getElementById('pitchSlider').value = voiceSettings.pitch;
+        document.getElementById('volSlider').value   = voiceSettings.volume;
+        updateLabel('rateVal',  voiceSettings.rate,                    '×');
+        updateLabel('pitchVal', voiceSettings.pitch,                   '');
+        updateLabel('volVal',   Math.round(voiceSettings.volume * 100),'%');
+    }
+
+    function saveSettings() {
+        voiceSettings.rate     = parseFloat(document.getElementById('rateSlider').value);
+        voiceSettings.pitch    = parseFloat(document.getElementById('pitchSlider').value);
+        voiceSettings.volume   = parseFloat(document.getElementById('volSlider').value);
+        voiceSettings.voiceURI = document.getElementById('voiceSelect').value;
+        try { localStorage.setItem('voiceSettings', JSON.stringify(voiceSettings)); } catch {}
+    }
+
+    function updateLabel(id, val, suffix) {
+        document.getElementById(id).textContent = val + suffix;
+    }
+
+    // ── Voice panel ───────────────────────────────────────────────────────────
+    function toggleVoicePanel() {
+        panelOpen = !panelOpen;
+        document.getElementById('voicePanel').classList.toggle('open', panelOpen);
+    }
+
+    // Close panel if clicking outside
+    document.addEventListener('click', e => {
+        const panel = document.getElementById('voicePanel');
+        const btn   = document.querySelector('.voice-settings-btn');
+        if (panelOpen && !panel.contains(e.target) && !btn.contains(e.target)) {
+            panelOpen = false;
+            panel.classList.remove('open');
+        }
+    });
+
+    // ── Load available voices into the dropdown ───────────────────────────────
+    function populateVoices() {
+        voicesList = window.speechSynthesis.getVoices().filter(v => v.lang.startsWith('en'));
+        const sel  = document.getElementById('voiceSelect');
+        sel.innerHTML = '';
+
+        if (voicesList.length === 0) {
+            sel.innerHTML = '<option>No English voices found</option>';
+            return;
+        }
+
+        voicesList.forEach(v => {
+            const opt   = document.createElement('option');
+            opt.value   = v.voiceURI;
+            opt.textContent = `${v.name} (${v.lang})`;
+            if (v.voiceURI === voiceSettings.voiceURI) opt.selected = true;
+            sel.appendChild(opt);
+        });
+
+        // If no saved preference, pick a good default
+        if (!voiceSettings.voiceURI) {
+            const preferred = voicesList.find(v =>
+                v.name.includes('Zira') || v.name.includes('Hazel') ||
+                v.name.includes('Jenny') || v.name.includes('Natural') ||
+                (v.name.includes('Google') && v.name.includes('Female'))
+            );
+            if (preferred) {
+                sel.value = preferred.voiceURI;
+                voiceSettings.voiceURI = preferred.voiceURI;
             }
-
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
-            
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'message-content';
-            contentDiv.textContent = content;
-
-            if (audioUrl && !isUser) {
-                const audio = document.createElement('audio');
-                audio.className = 'audio-player';
-                audio.controls = true;
-                audio.src = audioUrl;
-                contentDiv.appendChild(audio);
-            }
-
-            messageDiv.appendChild(contentDiv);
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
+    }
 
-        function showTypingIndicator() {
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'typing-indicator active';
-            typingDiv.id = 'typingIndicator';
-            typingDiv.innerHTML = '<span></span><span></span><span></span>';
-            chatMessages.appendChild(typingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
+    // Chrome loads voices async
+    if (window.speechSynthesis) {
+        populateVoices();
+        window.speechSynthesis.onvoiceschanged = populateVoices;
+        ttsMode = 'browser';
+    }
 
-        function hideTypingIndicator() {
-            const typing = document.getElementById('typingIndicator');
-            if (typing) {
-                typing.remove();
-            }
-        }
+    loadSettings();
 
-        async function sendMessage() {
-            const message = messageInput.value.trim();
-            if (!message) return;
+    // ── Poll backend for pyttsx3 (upgrades if available) ─────────────────────
+    async function pollBackendTts() {
+        try {
+            const res  = await fetch(`${BACKEND}/tts-status`);
+            const data = await res.json();
+            if (data.enabled) { ttsMode = 'backend'; return; }
+        } catch {}
+        setTimeout(pollBackendTts, 4000);
+    }
+    pollBackendTts();
 
-            // Add user message
-            addMessage(message, true);
-            messageInput.value = '';
-            sendButton.disabled = true;
+    // ── Speak with Web Speech API ─────────────────────────────────────────────
+    function speak(text) {
+        window.speechSynthesis.cancel();
 
-            // Show typing indicator
-            showTypingIndicator();
+        const utter    = new SpeechSynthesisUtterance(text);
+        utter.rate     = voiceSettings.rate;
+        utter.pitch    = voiceSettings.pitch;
+        utter.volume   = voiceSettings.volume;
 
-            try {
-                const response = await fetch('http://localhost:5000/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: message,
-                        session_id: sessionId
-                    })
-                });
+        // Find the selected voice object
+        const chosen = voicesList.find(v => v.voiceURI === voiceSettings.voiceURI)
+                    || voicesList[0];
+        if (chosen) utter.voice = chosen;
 
-                const data = await response.json();
-                hideTypingIndicator();
+        window.speechSynthesis.speak(utter);
+        return utter;
+    }
 
-                if (data.error) {
-                    addMessage('Sorry, I encountered an error. Please try again.', false);
-                } else {
-                    addMessage(data.response, false, data.audio_url);
-                }
-            } catch (error) {
-                hideTypingIndicator();
-                addMessage('Sorry, I could not connect to the server. Please make sure the backend is running.', false);
-            }
+    function testVoice() {
+        speak("Hi! This is how I currently sound. You can adjust the speed, pitch, and volume using the sliders.");
+    }
 
-            sendButton.disabled = false;
-            messageInput.focus();
-        }
+    // ── Speaking indicator widget ─────────────────────────────────────────────
+    function buildSpeakingIndicator() {
+        const wrap  = document.createElement('div');
+        wrap.className = 'speaking-indicator';
 
-        function sendQuickMessage(message) {
-            messageInput.value = message;
-            sendMessage();
-        }
+        const dots  = document.createElement('span');
+        dots.className = 'speaking-dots';
+        dots.innerHTML = '<span></span><span></span><span></span>';
 
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        }
+        const lbl   = document.createElement('span');
+        lbl.textContent = 'Speaking…';
 
-        // Auto-focus input on load
-        window.onload = () => {
-            messageInput.focus();
+        const stop  = document.createElement('button');
+        stop.className = 'stop-btn';
+        stop.textContent = '■ Stop';
+        stop.onclick = () => { window.speechSynthesis.cancel(); wrap.remove(); };
+
+        wrap.append(dots, lbl, stop);
+
+        const interval = setInterval(() => {
+            if (!window.speechSynthesis.speaking) { clearInterval(interval); wrap.remove(); }
+        }, 300);
+
+        return wrap;
+    }
+
+    // ── Backend WAV player (for pyttsx3 audio) ────────────────────────────────
+    function buildAudioPlayer(audioUrl) {
+        const fullUrl   = audioUrl.startsWith('http') ? audioUrl : `${BACKEND}${audioUrl}`;
+        const playIcon  = `<svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>`;
+        const pauseIcon = `<svg viewBox="0 0 24 24"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>`;
+
+        const audio = new Audio();
+        const wrap  = document.createElement('div');
+        wrap.className = 'audio-player-wrap';
+
+        const btn   = document.createElement('button');
+        btn.className = 'play-btn'; btn.innerHTML = playIcon;
+
+        const label = document.createElement('span');
+        label.className = 'audio-label'; label.textContent = '▶ Click to play';
+
+        const progWrap = document.createElement('div');
+        progWrap.className = 'audio-progress-container';
+        const progBar  = document.createElement('div');
+        progBar.className = 'audio-progress-bar';
+        progWrap.appendChild(progBar);
+
+        const timeEl = document.createElement('span');
+        timeEl.className = 'audio-time';
+
+        wrap.append(btn, label, progWrap, timeEl);
+
+        audio.addEventListener('error', () => { label.textContent = '⚠ Audio failed'; label.style.color = '#f87171'; });
+        audio.src = fullUrl; audio.load();
+
+        const doPlay = () => audio.play()
+            .then(() => { btn.innerHTML = pauseIcon; label.textContent = 'Playing…'; })
+            .catch(e  => { label.textContent = '⚠ ' + e.name; label.style.color='#f87171'; });
+
+        btn.onclick   = () => audio.paused ? doPlay() : (audio.pause(), btn.innerHTML = playIcon, label.textContent = '▶ Paused');
+        label.onclick = () => { if (audio.paused) doPlay(); };
+
+        audio.addEventListener('timeupdate', () => {
+            if (!audio.duration) return;
+            progBar.style.width = (audio.currentTime / audio.duration * 100) + '%';
+            const s = Math.floor(audio.currentTime);
+            timeEl.textContent = `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+        });
+        audio.addEventListener('ended', () => {
+            btn.innerHTML = playIcon; progBar.style.width = '0%';
+            timeEl.textContent = ''; label.textContent = '✓ Done — replay';
+        });
+        progWrap.onclick = e => {
+            if (!audio.duration) return;
+            const r = progWrap.getBoundingClientRect();
+            audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
         };
-    </script>
+
+        return wrap;
+    }
+
+    // ── Add message ───────────────────────────────────────────────────────────
+    function addMessage(content, isUser, audioUrl = null) {
+        document.querySelector('.welcome-message')?.remove();
+
+        const msgDiv     = document.createElement('div');
+        msgDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+
+        const text = document.createElement('span');
+        text.textContent = content;
+        contentDiv.appendChild(text);
+
+        if (!isUser && ttsCheckbox.checked) {
+            if (audioUrl) {
+                contentDiv.appendChild(buildAudioPlayer(audioUrl));
+            } else {
+                // Browser TTS
+                contentDiv.appendChild(buildSpeakingIndicator());
+                speak(content);
+            }
+        }
+
+        msgDiv.appendChild(contentDiv);
+        chatMessages.appendChild(msgDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+        const div = document.createElement('div');
+        div.className = 'typing-indicator active';
+        div.id = 'typingIndicator';
+        div.innerHTML = '<span></span><span></span><span></span>';
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    function hideTypingIndicator() {
+        document.getElementById('typingIndicator')?.remove();
+    }
+
+    // ── Send message ──────────────────────────────────────────────────────────
+    async function sendMessage() {
+        const message = messageInput.value.trim();
+        if (!message) return;
+
+        window.speechSynthesis.cancel();
+        addMessage(message, true);
+        messageInput.value = '';
+        sendButton.disabled = true;
+        showTypingIndicator();
+
+        try {
+            const res  = await fetch(`${BACKEND}/chat`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message,
+                    session_id: sessionId,
+                    tts: ttsCheckbox.checked && ttsMode === 'backend'
+                })
+            });
+            const data = await res.json();
+            hideTypingIndicator();
+
+            if (data.error) {
+                addMessage('Sorry, error: ' + data.error, false);
+            } else {
+                if (data.tts_enabled) ttsMode = 'backend';
+                addMessage(data.response, false, data.audio_url);
+            }
+        } catch (err) {
+            hideTypingIndicator();
+            addMessage('Could not connect to server — is chatbot.py running on port 5000?', false);
+        }
+
+        sendButton.disabled = false;
+        messageInput.focus();
+    }
+
+    function sendQuickMessage(msg) { messageInput.value = msg; sendMessage(); }
+    function handleKeyPress(e)     { if (e.key === 'Enter') sendMessage(); }
+    window.onload = () => messageInput.focus();
+</script>
 </body>
 </html>
