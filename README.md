@@ -2,39 +2,47 @@
 
 ## Installation Instructions
 
-Follow these steps to set up the Study Balance Bot:
+### Requirements
+- Python 3.6+
+- Pip (Python package installer)
 
-1. **Clone the Repository**  
-   Clone this repository to your local machine using the following command:
+### Set Up Virtual Environment
+1. Navigate to the project directory:
    ```bash
-   git clone https://github.com/anttip1197/study-balance-bot.git
+   cd path/to/study-balance-bot
+   ```
+2. Create a virtual environment:
+   ```bash
+   python -m venv venv
+   ```
+3. Activate the virtual environment:
+   - On Windows:
+     ```bash
+     venv\Scripts\activate
+     ```
+   - On macOS/Linux:
+     ```bash
+     source venv/bin/activate
+     ```
+
+### Install Dependencies
+Run the following command to install the required packages:
+```bash
+pip install -r requirements.txt
+```
+
+### Set Up ElevenLabs API
+1. Obtain your API key from [ElevenLabs](https://elevenlabs.io/).
+2. Set your API key as an environment variable:
+   ```bash
+   export ELEVENLABS_API_KEY='your_api_key'  # macOS/Linux
+   set ELEVENLABS_API_KEY='your_api_key'     # Windows
    ```
 
-2. **Navigate to the Project Directory**  
-   Change to the project directory:
-   ```bash
-   cd study-balance-bot
-   ```
+### Running the Bot
+To run the bot, execute the following command:
+```bash
+python chatbot.py
+```
 
-3. **Install Python Dependencies**  
-   Make sure you have Python and pip installed on your system. You can install the required dependencies by running:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Environment Configuration**  
-   Configure your environment variables as needed. Refer to the example configurations in the project for guidance.
-
-5. **Run the Bot**  
-   Once everything is set up, you can run the bot with:
-   ```bash
-   python bot.py
-   ```
-
-## Dependencies
-- ElevenLabs
-
-Make sure to check the repository for updates on dependencies and usage.
-
-## License
-This project is licensed under the MIT License.
+You can access it at [http://127.0.0.1:5000](http://127.0.0.1:5000).
