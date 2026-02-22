@@ -1,5 +1,5 @@
 flask
 flask-cors
-elevenlabs
 python-dotenv
 requests
+pyttsx3
