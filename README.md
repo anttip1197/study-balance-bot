@@ -62,7 +62,7 @@ Get a free Groq API key at [console.groq.com](https://console.groq.com)
 python chatbot.py
 ```
 
-Open your browser and go to **http://localhost:5000**
+Open your browser and go to **http://127.0.0.1:5000/**
 
 ---
 
