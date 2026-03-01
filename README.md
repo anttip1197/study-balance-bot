@@ -50,17 +50,11 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 4. Set up your API key
+### 4. Get an API key
 
 Get a free Groq API key at [console.groq.com](https://console.groq.com)
 
-```bash
-# Copy the example file
-cp .env.example .env
-
-# Then edit .env and add your key:
-# GROQ_API_KEY=your_key_here
-```
+(You will paste this key directly into the application's user interface.)
 
 ### 5. Run the app
 
@@ -94,8 +88,7 @@ study-balance-bot/
 ├── chatbot.py        # Flask backend + Groq AI + pyttsx3 TTS
 ├── index.html        # Frontend UI with voice settings
 ├── requirements.txt  # Python dependencies
-├── .env.example      # API key template
-├── .gitignore        # Ignores .env and tts_audio/
+├── .gitignore        # Ignores tts_audio/
 └── README.md         # This file
 ```
 
@@ -132,10 +125,9 @@ Browser Web Speech API reads it aloud
 
 ---
 
-## 📝 Environment Variables
+## � API Key
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `GROQ_API_KEY` | Your Groq API key from console.groq.com | ✅ Yes |
+The application requires a Groq API key.
+You can input your `GROQ_API_KEY` directly in the web UI. Your key will be securely saved in your browser's local storage for future sessions.
 
 ---

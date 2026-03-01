@@ -1,19 +1,13 @@
 from flask import Flask, request, jsonify, send_from_directory, send_file
 from flask_cors import CORS
-from dotenv import load_dotenv
 import os
 import sys
 import requests
 import uuid
 import threading
 
-load_dotenv()
-
 app = Flask(__name__)
 CORS(app)
-
-GROQ_API_KEY = os.getenv('GROQ_API_KEY', '')
-print(f"DEBUG: GROQ_API_KEY is set: {bool(GROQ_API_KEY)}")
 
 # ── TTS Setup ──────────────────────────────────────────────────────────────────
 TTS_ENABLED   = False
@@ -119,9 +113,9 @@ Keep responses concise but meaningful (2-4 sentences usually).
 You can help with anything - academics, work stress, personal issues, mental health, time management, or just listening."""
 
 
-def get_ai_response(user_message, conversation_history):
-    if not GROQ_API_KEY:
-        return "I need an API key to respond. Please set GROQ_API_KEY in your .env file."
+def get_ai_response(user_message, conversation_history, api_key):
+    if not api_key:
+        return "I need an API key to respond. Please provide it in the GUI."
     try:
         messages = [{"role": "system", "content": SYSTEM_PROMPT}]
         for msg in conversation_history[-10:]:
@@ -129,7 +123,7 @@ def get_ai_response(user_message, conversation_history):
         messages.append({"role": "user", "content": user_message})
 
         headers = {
-            'Authorization': f'Bearer {GROQ_API_KEY}',
+            'Authorization': f'Bearer {api_key}',
             'Content-Type': 'application/json'
         }
         payload = {
@@ -181,6 +175,7 @@ def chat():
         user_message  = data.get('message', '').strip()
         session_id    = data.get('session_id', 'default')
         tts_requested = data.get('tts', True)
+        api_key       = data.get('api_key', '').strip()
 
         if not user_message:
             return jsonify({'error': 'Please enter a message'}), 400
@@ -188,7 +183,7 @@ def chat():
         if session_id not in conversation_sessions:
             conversation_sessions[session_id] = []
 
-        bot_response = get_ai_response(user_message, conversation_sessions[session_id])
+        bot_response = get_ai_response(user_message, conversation_sessions[session_id], api_key)
 
         audio_url = None
         if tts_requested and TTS_ENABLED:
