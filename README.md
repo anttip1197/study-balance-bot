@@ -2,6 +2,8 @@
 
 A compassionate AI chatbot designed to help students navigate the challenges of balancing work and studies. Features real-time AI responses powered by Groq, and text-to-speech with fully customisable voice settings.
 
+> **Compatible with Windows, macOS, and Linux.**
+
 ![Python](https://img.shields.io/badge/Python-3.8+-blue)
 ![Flask](https://img.shields.io/badge/Flask-2.x-lightgrey)
 ![License](https://img.shields.io/badge/License-MIT-green)
@@ -72,12 +74,14 @@ Click the **🎛 Voice Settings** button in the header to customise:
 
 | Setting | Range | Tips |
 |---------|-------|------|
-| **Voice** | All installed English voices | Try Microsoft Jenny (Online) for best quality |
+| **Voice** | All installed voices | Windows: try *Microsoft Zira/Jenny*. macOS: try *Samantha* or *Alex* |
 | **Speed** | 0.5× – 2.0× | ~0.85× feels more natural and relaxed |
 | **Pitch** | 0.5 – 2.0 | ~0.9 sounds warmer, less robotic |
 | **Volume** | 0% – 100% | — |
 
 Use the **▶ Test Voice** button to hear changes instantly.
+
+> **macOS note:** Server-side TTS uses the built-in `nsss` speech driver. If you see a `pyttsx3` warning on first run, install the required bridge: `pip install pyobjc`.
 
 ---
 
@@ -121,7 +125,7 @@ Browser Web Speech API reads it aloud
 | AI | Groq API (Llama 3.1 8B Instant) |
 | Frontend | Vanilla HTML/CSS/JS |
 | TTS (primary) | Web Speech API (browser built-in) |
-| TTS (secondary) | pyttsx3 (Windows/Mac/Linux native voices) |
+| TTS (secondary) | pyttsx3 (Windows SAPI5 / macOS nsss / Linux espeak) |
 
 ---
 

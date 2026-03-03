@@ -5,6 +5,7 @@ import sys
 import requests
 import uuid
 import threading
+import queue
 
 app = Flask(__name__)
 CORS(app)
@@ -16,40 +17,45 @@ tts_lock      = threading.Lock()
 TTS_AUDIO_DIR = "tts_audio"
 os.makedirs(TTS_AUDIO_DIR, exist_ok=True)
 
+# Queue for serialising TTS work onto a single dedicated thread.
+# Each item: (text: str, result: list, done: threading.Event)
+_tts_queue: queue.Queue = queue.Queue()
+
+
 def safe_print(msg):
-    """Print without crashing on Windows terminals that can't handle Unicode."""
+    """Print without crashing on terminals that can't handle Unicode."""
     try:
         print(msg)
     except UnicodeEncodeError:
         print(msg.encode('ascii', errors='replace').decode('ascii'))
 
-def init_tts():
-    global tts_engine, TTS_ENABLED
 
-    # ------------------------------------------------------------------ #
-    # CRITICAL: pyttsx3 on Windows uses COM and segfaults when Flask's    #
-    # reloader spawns a child process. We must only init TTS in the MAIN  #
-    # worker process, not in the reloader watcher process.                #
-    # Flask sets WERKZEUG_RUN_MAIN=true in the real worker process.       #
-    # ------------------------------------------------------------------ #
-    if os.environ.get('WERKZEUG_RUN_MAIN') != 'true':
-        safe_print("DEBUG: Skipping TTS init in reloader process")
-        return
+def init_tts():
+    """
+    Initialise pyttsx3 synchronously.
+    Must be called from the main thread (or at least from whatever thread
+    will own the engine), before app.run() starts accepting requests.
+
+    Supports Windows (SAPI5), macOS (nsss), and Linux (espeak).
+    """
+    global tts_engine, TTS_ENABLED
 
     try:
         import pyttsx3
         engine = pyttsx3.init()
 
         voices = engine.getProperty('voices')
+
+        # Preferred voice names — covers Windows and macOS built-in voices.
+        PREFERRED = ('zira', 'hazel', 'samantha', 'alex', 'victoria', 'karen', 'daniel')
         chosen = None
         for v in voices:
             name_lower = v.name.lower()
-            if 'zira' in name_lower or 'hazel' in name_lower:
+            if any(p in name_lower for p in PREFERRED):
                 chosen = v
                 break
         if not chosen and voices:
-            # fallback: first available voice
-            chosen = voices[0]
+            chosen = voices[0]   # fallback: first available voice
 
         if chosen:
             engine.setProperty('voice', chosen.id)
@@ -67,12 +73,12 @@ def init_tts():
     except Exception as e:
         safe_print(f"WARNING: TTS init failed: {e}")
 
-threading.Thread(target=init_tts, daemon=True).start()
 
-
-def generate_audio(text: str):
-    if not TTS_ENABLED or tts_engine is None:
-        return None
+def _generate_audio_sync(text: str):
+    """
+    Generate a WAV file from *text* using the already-initialised engine.
+    Called exclusively from the _tts_worker thread.
+    """
     try:
         filename = f"{uuid.uuid4().hex}.wav"
         filepath = os.path.join(TTS_AUDIO_DIR, filename)
@@ -93,6 +99,38 @@ def generate_audio(text: str):
         import traceback
         traceback.print_exc()
         return None
+
+
+def _tts_worker():
+    """
+    Long-lived daemon thread that serialises all pyttsx3 calls.
+    pyttsx3's runAndWait() must not be called concurrently; this ensures
+    it runs on exactly one thread, which is safe on Windows (SAPI5) and
+    macOS (nsss) alike.
+    """
+    while True:
+        text, result_holder, done_event = _tts_queue.get()
+        url = _generate_audio_sync(text)
+        result_holder.append(url)
+        done_event.set()
+
+
+def generate_audio(text: str):
+    """
+    Public helper used by Flask routes.
+    Submits work to the TTS worker thread and waits up to 15 s for the result.
+    """
+    if not TTS_ENABLED or tts_engine is None:
+        return None
+
+    result_holder = []
+    done_event    = threading.Event()
+    _tts_queue.put((text, result_holder, done_event))
+    done_event.wait(timeout=15)
+
+    audio_url = result_holder[0] if result_holder else None
+    safe_print(f"DEBUG: audio_url = {audio_url}")
+    return audio_url
 
 
 # ── Conversation ───────────────────────────────────────────────────────────────
@@ -188,7 +226,6 @@ def chat():
         audio_url = None
         if tts_requested and TTS_ENABLED:
             audio_url = generate_audio(bot_response)
-            safe_print(f"DEBUG: audio_url = {audio_url}")
 
         conversation_sessions[session_id].append({'role': 'user',      'content': user_message})
         conversation_sessions[session_id].append({'role': 'assistant', 'content': bot_response})
@@ -205,6 +242,15 @@ def chat():
 
 
 if __name__ == '__main__':
-    # use_reloader=False stops Flask from spawning a second process,
-    # which is what caused the pyttsx3 COM segfault on Windows.
+    # Initialise TTS synchronously on the main thread before Flask starts.
+    # This is important for macOS (nsss driver) and Windows (SAPI5) alike.
+    init_tts()
+
+    # Start the dedicated TTS worker thread (serialises all pyttsx3 calls).
+    if TTS_ENABLED:
+        t = threading.Thread(target=_tts_worker, daemon=True)
+        t.start()
+
+    # use_reloader=False: prevents Flask from spawning a child process,
+    # which would create a second pyttsx3 engine and cause conflicts.
     app.run(debug=True, port=5000, use_reloader=False)
