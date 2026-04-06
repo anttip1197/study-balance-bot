@@ -45,13 +45,15 @@
         }
 
         .chat-header-text h1 {
-            font-size: 20px;
-            margin-bottom: 2px;
+            font-size: 22px;
+            margin-bottom: 4px;
+            letter-spacing: 0.02em;
         }
 
         .chat-header-text p {
-            font-size: 12px;
-            opacity: 0.85;
+            font-size: 13px;
+            opacity: 0.9;
+            line-height: 1.5;
         }
 
         .header-controls {
@@ -62,8 +64,8 @@
 
         /* Voice settings button */
         .voice-settings-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.16);
+            border: 1px solid rgba(255, 255, 255, 0.28);
             color: white;
             border-radius: 20px;
             padding: 6px 14px;
@@ -72,11 +74,12 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.2s;
         }
 
         .voice-settings-btn:hover {
-            background: rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.28);
+            transform: translateY(-1px);
         }
 
         /* TTS toggle */
@@ -87,6 +90,18 @@
             font-size: 13px;
             cursor: pointer;
             user-select: none;
+        }
+
+        .tts-icon {
+            font-size: 16px;
+        }
+
+        .tts-icon::after {
+            content: '🔇';
+        }
+
+        #ttsCheckbox:checked ~ .tts-icon::after {
+            content: '🔊';
         }
 
         .tts-toggle input {
@@ -180,6 +195,39 @@
 
         .voice-panel-body {
             padding: 16px;
+        }
+
+        .api-key-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .api-key-input:focus {
+            border-color: #667eea;
+        }
+
+        .api-info {
+            margin-top: 12px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .api-info p {
+            margin-bottom: 4px;
+        }
+
+        .api-info a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .api-info a:hover {
+            text-decoration: underline;
         }
 
         .setting-row {
@@ -285,13 +333,13 @@
         /* ── Chat area ── */
         .chat-messages {
             flex: 1;
-            padding: 20px;
+            padding: 24px 20px 20px;
             overflow-y: auto;
-            background: #f5f5f5;
+            background: #f5f7fb;
         }
 
         .message {
-            margin-bottom: 18px;
+            margin-bottom: 24px;
             display: flex;
             align-items: flex-start;
         }
@@ -302,15 +350,17 @@
 
         .message-content {
             max-width: 72%;
-            padding: 13px 17px;
-            border-radius: 18px;
+            padding: 18px 20px;
+            border-radius: 22px;
+            line-height: 1.6;
         }
 
         .message.bot .message-content {
-            background: white;
-            color: #333;
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+            background: #fcfdff;
+            color: #232e3d;
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            border-bottom-left-radius: 8px;
+            box-shadow: 0 10px 24px rgba(102, 126, 234, 0.07);
         }
 
         .message.user .message-content {
@@ -435,56 +485,82 @@
         }
 
         /* Quick actions */
+        .suggested-starts {
+            margin: 24px 20px 0;
+            padding: 20px;
+            background: #f3f6ff;
+            border-radius: 24px;
+            border: 1px solid rgba(102, 126, 234, 0.14);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.06);
+            text-align: center;
+        }
+
+        .suggested-title {
+            margin-bottom: 18px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e2c4a;
+        }
+
         .quick-actions {
-            padding: 10px 20px;
             display: flex;
-            gap: 8px;
+            justify-content: center;
+            gap: 10px;
             flex-wrap: wrap;
-            background: white;
-            border-top: 1px solid #e0e0e0;
+            padding: 0;
+            background: transparent;
+            border-top: none;
             flex-shrink: 0;
         }
 
         .quick-action-btn {
-            padding: 7px 14px;
-            background: #f0f0f0;
-            border: 1px solid #ddd;
-            border-radius: 15px;
-            font-size: 13px;
+            padding: 12px 18px;
+            background: #eef3ff;
+            border: 1px solid #dce6f6;
+            border-radius: 24px;
+            font-size: 14px;
+            color: #1f2937;
             cursor: pointer;
-            transition: all 0.2s;
+            min-width: 175px;
+            transition: all 0.2s ease;
         }
 
         .quick-action-btn:hover {
-            background: #667eea;
+            background: #6079e6;
             color: white;
-            border-color: #667eea;
+            border-color: #5c76db;
         }
 
         .chat-input-container {
-            padding: 14px 20px;
+            padding: 24px 24px;
             background: white;
-            border-top: 1px solid #e0e0e0;
+            border-top: 1px solid #e6ecf3;
             flex-shrink: 0;
         }
 
         .chat-input-wrapper {
             display: flex;
-            gap: 10px;
+            gap: 16px;
         }
 
         .chat-input {
             flex: 1;
-            padding: 12px 18px;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
+            padding: 16px 22px;
+            border: 1px solid #d7dde7;
+            border-radius: 30px;
             font-size: 15px;
             outline: none;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background: #fafbff;
+        }
+
+        .chat-input::placeholder {
+            color: #7e8ca6;
         }
 
         .chat-input:focus {
             border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.08);
         }
 
         .send-button {
@@ -506,6 +582,34 @@
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
+        }
+
+        .mic-button {
+            padding: 12px 16px;
+            background: #f0f4ff;
+            color: #667eea;
+            border: 1px solid #d0daf2;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .mic-button:hover {
+            background: #e0e8ff;
+            transform: scale(1.05);
+        }
+
+        .mic-button.listening {
+            background: #ff6b6b;
+            color: white;
+            border-color: #ff5252;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
 
         .typing-indicator {
@@ -554,14 +658,14 @@
         }
 
         .welcome-message {
-            text-align: center;
-            padding: 40px 20px;
-            color: #666;
+            margin-bottom: 28px;
         }
 
-        .welcome-message h2 {
-            color: #667eea;
-            margin-bottom: 12px;
+        .welcome-message .message-content {
+            padding: 18px 20px;
+            border-radius: 24px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(229, 235, 245, 0.9);
         }
     </style>
 </head>
@@ -577,32 +681,30 @@
             </div>
             <div class="header-controls">
                 <button class="voice-settings-btn" onclick="toggleVoicePanel()">
-                    🎛 Voice Settings
+                    ⚙ Settings
                 </button>
                 <label class="tts-toggle">
                     <input type="checkbox" id="ttsCheckbox" checked>
                     <span class="toggle-track"></span>
-                    🔊
+                    <span class="tts-icon"></span>
                 </label>
             </div>
         </div>
-
-        <!-- API Key Input -->
-        <div class="api-key-container"
-            style="padding: 10px 20px; background: rgba(255,255,255,0.9); border-bottom: 1px solid #e0e0e0; display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
-            <label for="apiKeyInput" style="font-size: 13px; font-weight: 600; color: #555; white-space: nowrap;">Groq
-                API Key:</label>
-            <input type="password" id="apiKeyInput" placeholder="gsk_..."
-                style="flex: 1; padding: 6px 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; outline: none;">
-        </div>
-
         <!-- Voice Settings Panel -->
         <div class="voice-panel" id="voicePanel">
             <div class="voice-panel-header">
-                🎛 Voice Settings
+                ⚙ Settings
                 <button class="voice-panel-close" onclick="toggleVoicePanel()">✕</button>
             </div>
             <div class="voice-panel-body">
+                <div class="setting-row">
+                    <div class="setting-label">Groq API Key</div>
+                    <input type="password" class="api-key-input" id="apiKeyInput" placeholder="Enter your Groq API key">
+                </div>
+                <div class="api-info">
+                    <p>Get your API key from <a href="https://console.groq.com/" target="_blank">console.groq.com</a></p>
+                    <p>Your key is stored locally and never sent anywhere except to Groq's API.</p>
+                </div>
 
                 <div class="setting-row">
                     <div class="setting-label">Voice</div>
@@ -655,30 +757,28 @@
 
         <!-- Messages -->
         <div class="chat-messages" id="chatMessages">
-            <div class="welcome-message">
-                <h2>Welcome! 👋</h2>
-                <p>I'm here to support you as you balance your studies and work.</p>
-                <p>Use <strong>🎛 Voice Settings</strong> to customise how I sound.</p>
+            <div class="message bot welcome-message">
+                <div class="message-content">
+                    <span>Hi 👋 I'm here to support you with balancing your studies and work.<br><br>What's been the most challenging thing for you lately?<br><br>You can change voice settings from ⚙ Settings, too.</span>
+                </div>
             </div>
-        </div>
-
-        <!-- Quick actions -->
-        <div class="quick-actions">
-            <button class="quick-action-btn" onclick="sendQuickMessage('I feel overwhelmed with everything')">Feeling
-                overwhelmed</button>
-            <button class="quick-action-btn" onclick="sendQuickMessage('I lack motivation to study')">Low
-                motivation</button>
-            <button class="quick-action-btn" onclick="sendQuickMessage('I struggle to take breaks')">Difficulty slowing
-                down</button>
-            <button class="quick-action-btn" onclick="sendQuickMessage('I need to talk about my workload')">Talk about
-                workload</button>
+            <div class="suggested-starts">
+                <div class="suggested-title">💡 Suggested starts</div>
+                <div class="quick-actions">
+                    <button class="quick-action-btn" onclick="sendQuickMessage('😰 I feel overwhelmed')">😰 I feel overwhelmed</button>
+                    <button class="quick-action-btn" onclick="sendQuickMessage('📉 I have low motivation')">📉 I have low motivation</button>
+                    <button class="quick-action-btn" onclick="sendQuickMessage('🕒 My workload feels too heavy')">🕒 My workload feels too heavy</button>
+                    <button class="quick-action-btn" onclick="sendQuickMessage('😴 I’m exhausted lately')">😴 I’m exhausted lately</button>
+                </div>
+            </div>
         </div>
 
         <!-- Input -->
         <div class="chat-input-container">
             <div class="chat-input-wrapper">
-                <input type="text" class="chat-input" id="messageInput" placeholder="Share what's on your mind…"
+                <input type="text" class="chat-input" id="messageInput" placeholder="Tell me what’s stressing you out today…"
                     onkeypress="handleKeyPress(event)">
+                <button class="mic-button" id="micButton" onclick="toggleSpeechRecognition()" title="Push to talk">🎤</button>
                 <button class="send-button" id="sendButton" onclick="sendMessage()">Send</button>
             </div>
         </div>
@@ -691,11 +791,24 @@
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
         const ttsCheckbox = document.getElementById('ttsCheckbox');
+        const suggestedStarts = document.querySelector('.suggested-starts');
         const sessionId = 'session_' + Date.now();
 
         let ttsMode = 'none';
         let voicesList = [];
         let panelOpen = false;
+
+        function hideSuggestedStarts() {
+            if (suggestedStarts) {
+                suggestedStarts.style.display = 'none';
+            }
+        }
+
+        messageInput.addEventListener('input', () => {
+            if (messageInput.value.trim()) {
+                hideSuggestedStarts();
+            }
+        });
 
         // ── Voice settings (persisted to localStorage) ───────────────────────────
         let voiceSettings = {
@@ -906,8 +1019,6 @@
 
         // ── Add message ───────────────────────────────────────────────────────────
         function addMessage(content, isUser, audioUrl = null) {
-            document.querySelector('.welcome-message')?.remove();
-
             const msgDiv = document.createElement('div');
             msgDiv.className = `message ${isUser ? 'user' : 'bot'}`;
 
@@ -991,8 +1102,72 @@
             messageInput.focus();
         }
 
-        function sendQuickMessage(msg) { messageInput.value = msg; sendMessage(); }
+        function sendQuickMessage(msg) { hideSuggestedStarts(); messageInput.value = msg; sendMessage(); }
         function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+
+        // Speech Recognition variables
+        let recognition = null;
+        let isListening = false;
+
+        // Initialize speech recognition
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = () => {
+                isListening = true;
+                micButton.classList.add('listening');
+                micButton.title = 'Listening... Click to stop';
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                messageInput.value += (messageInput.value ? ' ' : '') + transcript;
+                messageInput.focus();
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                stopSpeechRecognition();
+            };
+
+            recognition.onend = () => {
+                stopSpeechRecognition();
+            };
+        }
+
+        function toggleSpeechRecognition() {
+            if (!recognition) {
+                alert('Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari.');
+                return;
+            }
+
+            if (isListening) {
+                stopSpeechRecognition();
+            } else {
+                startSpeechRecognition();
+            }
+        }
+
+        function startSpeechRecognition() {
+            try {
+                recognition.start();
+            } catch (error) {
+                console.error('Error starting speech recognition:', error);
+            }
+        }
+
+        function stopSpeechRecognition() {
+            if (recognition && isListening) {
+                recognition.stop();
+            }
+            isListening = false;
+            micButton.classList.remove('listening');
+            micButton.title = 'Push to talk';
+        }
 
         // Load API key from local storage
         document.addEventListener('DOMContentLoaded', () => {
