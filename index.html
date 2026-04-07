@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Study-Work Balance Support Bot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -13,21 +16,23 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            height: 100vh;
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 20px;
+            background: linear-gradient(180deg, #eef7ff 0%, #f9fbff 50%, #f7f3ff 100%);
         }
 
         .chat-container {
-            width: 90%;
-            max-width: 800px;
-            height: 90vh;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            width: 92%;
+            max-width: 840px;
+            min-height: 720px;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 26px;
+            border: 1px solid rgba(147, 160, 255, 0.2);
+            box-shadow: 0 20px 45px rgba(72, 86, 172, 0.14);
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -35,50 +40,81 @@
         }
 
         .chat-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 18px 25px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #212a44;
+            padding: 24px 28px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-shrink: 0;
+            border-bottom: 1px solid rgba(226, 231, 255, 0.85);
+            backdrop-filter: blur(8px);
+        }
+
+        .chat-header-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+            max-width: 560px;
         }
 
         .chat-header-text h1 {
-            font-size: 22px;
-            margin-bottom: 4px;
-            letter-spacing: 0.02em;
+            font-size: 26px;
+            margin-bottom: 0;
+            letter-spacing: -0.02em;
+            color: #1f2c56;
         }
 
         .chat-header-text p {
-            font-size: 13px;
-            opacity: 0.9;
-            line-height: 1.5;
+            font-size: 14px;
+            opacity: 0.85;
+            line-height: 1.75;
+            max-width: 560px;
+            color: #475077;
+        }
+
+        .chat-logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-img {
+            display: block;
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 22px;
+            background: rgba(117, 138, 255, 0.14);
+            padding: 12px;
+            border: 1px solid rgba(117, 138, 255, 0.22);
         }
 
         .header-controls {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 14px;
         }
 
         /* Voice settings button */
         .voice-settings-btn {
-            background: rgba(255, 255, 255, 0.16);
-            border: 1px solid rgba(255, 255, 255, 0.28);
-            color: white;
-            border-radius: 20px;
-            padding: 6px 14px;
+            background: rgba(117, 138, 255, 0.12);
+            border: 1px solid rgba(117, 138, 255, 0.25);
+            color: #2b3f8c;
+            border-radius: 22px;
+            padding: 10px 16px;
             font-size: 13px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
-            transition: background 0.2s, transform 0.2s;
+            gap: 8px;
+            transition: background 0.2s, transform 0.2s, border-color 0.2s;
         }
 
         .voice-settings-btn:hover {
-            background: rgba(255, 255, 255, 0.28);
+            background: rgba(117, 138, 255, 0.18);
+            border-color: rgba(117, 138, 255, 0.4);
             transform: translateY(-1px);
         }
 
@@ -86,10 +122,11 @@
         .tts-toggle {
             display: flex;
             align-items: center;
-            gap: 7px;
+            gap: 10px;
             font-size: 13px;
             cursor: pointer;
             user-select: none;
+            color: #2b3f8c;
         }
 
         .tts-icon {
@@ -109,10 +146,10 @@
         }
 
         .toggle-track {
-            width: 38px;
+            width: 40px;
             height: 22px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 11px;
+            background: #e8eeff;
+            border-radius: 999px;
             position: relative;
             transition: background 0.3s;
         }
@@ -120,21 +157,22 @@
         .toggle-track::after {
             content: '';
             position: absolute;
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             background: white;
             border-radius: 50%;
-            top: 3px;
-            left: 3px;
+            top: 2px;
+            left: 2px;
             transition: transform 0.3s;
+            box-shadow: 0 2px 10px rgba(46, 60, 121, 0.12);
         }
 
         #ttsCheckbox:checked+.toggle-track {
-            background: rgba(255, 255, 255, 0.6);
+            background: #8b9cff;
         }
 
         #ttsCheckbox:checked+.toggle-track::after {
-            transform: translateX(16px);
+            transform: translateX(18px);
         }
 
         /* ── Voice Settings Panel ── */
@@ -143,9 +181,9 @@
             top: 70px;
             right: 20px;
             width: 320px;
-            background: white;
+            background: #fbfbff;
             border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+            box-shadow: 0 12px 36px rgba(72, 86, 172, 0.14);
             z-index: 100;
             overflow: hidden;
             display: none;
@@ -169,7 +207,7 @@
         }
 
         .voice-panel-header {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #7d92ff, #b393ff);
             color: white;
             padding: 14px 18px;
             font-size: 14px;
@@ -186,7 +224,7 @@
             font-size: 18px;
             cursor: pointer;
             line-height: 1;
-            opacity: 0.8;
+            opacity: 0.9;
         }
 
         .voice-panel-close:hover {
@@ -263,7 +301,8 @@
         }
 
         .voice-select:focus {
-            border-color: #667eea;
+            border-color: #8e99ff;
+            box-shadow: 0 0 0 4px rgba(142, 153, 255, 0.12);
         }
 
         /* Sliders */
@@ -278,7 +317,7 @@
             width: 100%;
             height: 5px;
             border-radius: 3px;
-            background: #e0e0e0;
+            background: #e8eeff;
             outline: none;
             cursor: pointer;
         }
@@ -288,9 +327,9 @@
             width: 18px;
             height: 18px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #7d92ff, #b393ff);
             cursor: pointer;
-            box-shadow: 0 1px 4px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 1px 4px rgba(117, 138, 255, 0.4);
         }
 
         input[type="range"]::-webkit-slider-runnable-track {
@@ -302,44 +341,45 @@
             display: flex;
             justify-content: space-between;
             font-size: 10px;
-            color: #aaa;
+            color: #8c94b5;
             margin-top: 3px;
         }
 
         /* Test button */
         .test-btn {
             width: 100%;
-            padding: 10px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 12px;
+            background: linear-gradient(135deg, #6b92ff, #8f86ff);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 13px;
             cursor: pointer;
             font-weight: 600;
-            transition: opacity 0.2s, transform 0.1s;
-            margin-top: 4px;
+            transition: opacity 0.2s, transform 0.1s, box-shadow 0.2s;
+            margin-top: 6px;
+            box-shadow: 0 10px 22px rgba(109, 124, 255, 0.18);
         }
 
         .test-btn:hover {
-            opacity: 0.9;
-            transform: scale(1.02);
+            opacity: 0.95;
+            transform: translateY(-1px);
         }
 
         .test-btn:active {
-            transform: scale(0.98);
+            transform: translateY(0);
         }
 
         /* ── Chat area ── */
         .chat-messages {
             flex: 1;
-            padding: 24px 20px 20px;
+            padding: 26px 22px 22px;
             overflow-y: auto;
-            background: #f5f7fb;
+            background: #f5f7ff;
         }
 
         .message {
-            margin-bottom: 24px;
+            margin-bottom: 22px;
             display: flex;
             align-items: flex-start;
         }
@@ -350,23 +390,24 @@
 
         .message-content {
             max-width: 72%;
-            padding: 18px 20px;
-            border-radius: 22px;
-            line-height: 1.6;
+            padding: 20px 22px;
+            border-radius: 26px;
+            line-height: 1.7;
         }
 
         .message.bot .message-content {
-            background: #fcfdff;
-            color: #232e3d;
-            border: 1px solid rgba(226, 232, 240, 0.9);
-            border-bottom-left-radius: 8px;
-            box-shadow: 0 10px 24px rgba(102, 126, 234, 0.07);
+            background: #ffffff;
+            color: #2a334f;
+            border: 1px solid rgba(209, 219, 255, 0.95);
+            border-bottom-left-radius: 10px;
+            box-shadow: 0 12px 30px rgba(94, 106, 172, 0.08);
         }
 
         .message.user .message-content {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #6b92ff, #9b8dff);
             color: white;
-            border-bottom-right-radius: 4px;
+            border-bottom-right-radius: 8px;
+            box-shadow: 0 12px 30px rgba(106, 111, 227, 0.18);
         }
 
         /* Speaking indicator */
@@ -487,25 +528,32 @@
         /* Quick actions */
         .suggested-starts {
             margin: 24px 20px 0;
-            padding: 20px;
-            background: #f3f6ff;
-            border-radius: 24px;
-            border: 1px solid rgba(102, 126, 234, 0.14);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.06);
-            text-align: center;
+            padding: 22px;
+            background: #ffffff;
+            border-radius: 26px;
+            border: 1px solid rgba(156, 152, 255, 0.16);
+            box-shadow: 0 16px 40px rgba(103, 113, 205, 0.08);
+            text-align: left;
         }
 
         .suggested-title {
-            margin-bottom: 18px;
-            font-size: 16px;
+            margin-bottom: 10px;
+            font-size: 17px;
             font-weight: 700;
-            color: #1e2c4a;
+            color: #2b3f6c;
+        }
+
+        .suggested-description {
+            margin-bottom: 18px;
+            font-size: 13.5px;
+            color: #5b6c92;
+            line-height: 1.7;
         }
 
         .quick-actions {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
             padding: 0;
             background: transparent;
@@ -514,81 +562,89 @@
         }
 
         .quick-action-btn {
-            padding: 12px 18px;
-            background: #eef3ff;
-            border: 1px solid #dce6f6;
-            border-radius: 24px;
+            padding: 14px 18px;
+            background: #f5f6ff;
+            border: 1px solid rgba(154, 159, 255, 0.22);
+            border-radius: 22px;
             font-size: 14px;
             color: #1f2937;
             cursor: pointer;
             min-width: 175px;
             transition: all 0.2s ease;
+            box-shadow: 0 10px 24px rgba(114, 124, 205, 0.08);
         }
 
         .quick-action-btn:hover {
-            background: #6079e6;
+            background: linear-gradient(135deg, #8d96ff, #b59dff);
             color: white;
-            border-color: #5c76db;
+            border-color: transparent;
+            transform: translateY(-1px);
         }
 
         .chat-input-container {
             padding: 24px 24px;
-            background: white;
-            border-top: 1px solid #e6ecf3;
+            background: #f8faff;
+            border-top: 1px solid rgba(215, 225, 255, 0.95);
             flex-shrink: 0;
         }
 
         .chat-input-wrapper {
             display: flex;
             gap: 16px;
+            align-items: center;
         }
 
         .chat-input {
             flex: 1;
-            padding: 16px 22px;
-            border: 1px solid #d7dde7;
-            border-radius: 30px;
-            font-size: 15px;
+            padding: 18px 22px;
+            border: 1px solid rgba(211, 221, 247, 0.95);
+            border-radius: 32px;
+            font-size: 15.5px;
             outline: none;
             transition: border-color 0.3s, box-shadow 0.3s;
-            background: #fafbff;
+            background: #ffffff;
+            min-height: 56px;
+            box-shadow: inset 0 1px 2px rgba(75, 98, 182, 0.06);
         }
 
         .chat-input::placeholder {
-            color: #7e8ca6;
+            color: #a2aecf;
         }
 
         .chat-input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.08);
+            border-color: #8e99ff;
+            box-shadow: 0 0 0 6px rgba(141, 151, 255, 0.14);
         }
 
         .send-button {
-            padding: 12px 26px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #7f8dff, #ac8dff);
             color: white;
             border: none;
-            border-radius: 25px;
+            border-radius: 28px;
             font-size: 15px;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            min-width: 118px;
+            height: 52px;
         }
 
         .send-button:hover {
-            transform: scale(1.05);
+            transform: translateY(-1px);
+            box-shadow: 0 12px 26px rgba(126, 137, 255, 0.2);
         }
 
         .send-button:disabled {
-            opacity: 0.6;
+            opacity: 0.65;
             cursor: not-allowed;
             transform: none;
         }
 
         .mic-button {
             padding: 12px 16px;
-            background: #f0f4ff;
-            color: #667eea;
-            border: 1px solid #d0daf2;
+            background: #eef3ff;
+            color: #556cd3;
+            border: 1px solid rgba(142, 152, 255, 0.35);
             border-radius: 25px;
             font-size: 16px;
             cursor: pointer;
@@ -596,8 +652,8 @@
         }
 
         .mic-button:hover {
-            background: #e0e8ff;
-            transform: scale(1.05);
+            background: #e4e9ff;
+            transform: translateY(-1px);
         }
 
         .mic-button.listening {
@@ -675,9 +731,12 @@
 
         <!-- Header -->
         <div class="chat-header">
-            <div class="chat-header-text">
-                <h1>Study-Work Balance Support</h1>
-                <p>A supportive space for students balancing work and studies</p>
+            <div class="chat-logo">
+                <img src="/assets/logo.png" alt="Study Balance logo" class="logo-img">
+                <div class="chat-header-text">
+                    <h1>Study-Work Balance Support</h1>
+                    <p>A supportive space for students balancing work and studies</p>
+                </div>
             </div>
             <div class="header-controls">
                 <button class="voice-settings-btn" onclick="toggleVoicePanel()">
@@ -759,11 +818,12 @@
         <div class="chat-messages" id="chatMessages">
             <div class="message bot welcome-message">
                 <div class="message-content">
-                    <span>Hi 👋 I'm here to support you with balancing your studies and work.<br><br>What's been the most challenging thing for you lately?<br><br>You can change voice settings from ⚙ Settings, too.</span>
+                    <span>Hi 👋 I'm here to support you as you balance studies and work.<br><br>Take a moment to share how you’re feeling — I’m listening.<br><br>You can also adjust voice settings from ⚙ Settings.</span>
                 </div>
             </div>
             <div class="suggested-starts">
-                <div class="suggested-title">💡 Suggested starts</div>
+                <div class="suggested-title">💡 Need a gentle start?</div>
+                <p class="suggested-description">Pick one of these prompts if you want an easy way to begin.</p>
                 <div class="quick-actions">
                     <button class="quick-action-btn" onclick="sendQuickMessage('😰 I feel overwhelmed')">😰 I feel overwhelmed</button>
                     <button class="quick-action-btn" onclick="sendQuickMessage('📉 I have low motivation')">📉 I have low motivation</button>
@@ -803,12 +863,6 @@
                 suggestedStarts.style.display = 'none';
             }
         }
-
-        messageInput.addEventListener('input', () => {
-            if (messageInput.value.trim()) {
-                hideSuggestedStarts();
-            }
-        });
 
         // ── Voice settings (persisted to localStorage) ───────────────────────────
         let voiceSettings = {
@@ -1067,6 +1121,7 @@
             }
             if (!message) return;
 
+            hideSuggestedStarts();
             window.speechSynthesis.cancel();
             addMessage(message, true);
             messageInput.value = '';
