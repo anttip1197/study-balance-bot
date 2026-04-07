@@ -28,7 +28,7 @@
         .chat-container {
             width: 92%;
             max-width: 840px;
-            min-height: 720px;
+            height: 720px;
             background: rgba(255, 255, 255, 0.98);
             border-radius: 26px;
             border: 1px solid rgba(147, 160, 255, 0.2);
@@ -866,7 +866,7 @@
 
         // ── Voice settings (persisted to localStorage) ───────────────────────────
         let voiceSettings = {
-            voiceURI: '',
+            voiceKey: '',
             rate: 1.0,
             pitch: 1.0,
             volume: 1.0
@@ -890,7 +890,7 @@
             voiceSettings.rate = parseFloat(document.getElementById('rateSlider').value);
             voiceSettings.pitch = parseFloat(document.getElementById('pitchSlider').value);
             voiceSettings.volume = parseFloat(document.getElementById('volSlider').value);
-            voiceSettings.voiceURI = document.getElementById('voiceSelect').value;
+            voiceSettings.voiceKey = document.getElementById('voiceSelect').value;
             try { localStorage.setItem('voiceSettings', JSON.stringify(voiceSettings)); } catch { }
         }
 
@@ -927,22 +927,23 @@
 
             voicesList.forEach(v => {
                 const opt = document.createElement('option');
-                opt.value = v.voiceURI;
+                opt.value = `${v.name} (${v.lang})`;
                 opt.textContent = `${v.name} (${v.lang})`;
-                if (v.voiceURI === voiceSettings.voiceURI) opt.selected = true;
+                if (opt.value === voiceSettings.voiceKey) opt.selected = true;
                 sel.appendChild(opt);
             });
 
             // If no saved preference, pick a good default
-            if (!voiceSettings.voiceURI) {
+            if (!voiceSettings.voiceKey) {
                 const preferred = voicesList.find(v =>
                     v.name.includes('Zira') || v.name.includes('Hazel') ||
                     v.name.includes('Jenny') || v.name.includes('Natural') ||
                     (v.name.includes('Google') && v.name.includes('Female'))
                 );
                 if (preferred) {
-                    sel.value = preferred.voiceURI;
-                    voiceSettings.voiceURI = preferred.voiceURI;
+                    const key = `${preferred.name} (${preferred.lang})`;
+                    sel.value = key;
+                    voiceSettings.voiceKey = key;
                 }
             }
         }
@@ -977,7 +978,7 @@
             utter.volume = voiceSettings.volume;
 
             // Find the selected voice object
-            const chosen = voicesList.find(v => v.voiceURI === voiceSettings.voiceURI)
+            const chosen = voicesList.find(v => `${v.name} (${v.lang})` === voiceSettings.voiceKey)
                 || voicesList[0];
             if (chosen) utter.voice = chosen;
 
