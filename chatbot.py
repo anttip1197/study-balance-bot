@@ -225,6 +225,12 @@ def index():
     return send_from_directory('.', 'index.html')
 
 
+@app.route('/assets/<path:filename>')
+def serve_assets(filename):
+    assets_dir = os.path.join(app.root_path, 'assets')
+    return send_from_directory(assets_dir, filename)
+
+
 @app.route('/audio/<filename>')
 def serve_audio(filename):
     filepath = os.path.join(TTS_AUDIO_DIR, filename)
