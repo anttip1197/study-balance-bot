@@ -723,6 +723,125 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
             border: 1px solid rgba(229, 235, 245, 0.9);
         }
+
+        .disclaimer {
+            font-size: 12px;
+            color: #7a86a8;
+            margin-top: 10px;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        .fake-link {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .popup {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: white;
+            border: 1px solid rgba(147, 160, 255, 0.3);
+            padding: 14px 16px;
+            max-width: 320px;
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(72, 86, 172, 0.15);
+            font-size: 13px;
+            color: #2a334f;
+            z-index: 999;
+        }
+
+        .popup button {
+            margin-top: 10px;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 8px;
+            background: #8e99ff;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .popup button:hover {
+            opacity: 0.9;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* MODAL OVERLAY */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(20, 25, 60, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 998;
+        }
+
+/* MODAL BOX */
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            width: 90%;
+            max-width: 420px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 25px 60px rgba(72, 86, 172, 0.25);
+            z-index: 999;
+            opacity: 0;
+            transition: all 0.2s ease;
+        }
+
+        /* Visible state */
+        .modal:not(.hidden) {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* Header */
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 18px;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            color: #2a334f;
+        }
+
+        /* Close button */
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            opacity: 0.6;
+        }
+
+        .modal-close:hover {
+            opacity: 1;
+        }
+
+        /* Content */
+        .modal-content {
+            padding: 18px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #4a5678;
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none;
+        }
+
     </style>
 </head>
 
@@ -736,6 +855,9 @@
                 <div class="chat-header-text">
                     <h1>Study-Work Balance Support</h1>
                     <p>A supportive space for students balancing work and studies</p>
+                    <p></p>
+                    <p><small>Talk, reflect, and make sense of everyday stress. Not a replacement for professional support.
+</small></p>
                 </div>
             </div>
             <div class="header-controls">
@@ -841,9 +963,39 @@
                 <button class="mic-button" id="micButton" onclick="toggleSpeechRecognition()" title="Push to talk">🎤</button>
                 <button class="send-button" id="sendButton" onclick="sendMessage()">Send</button>
             </div>
+
+        <!-- DISCLAIMER -->
+        <p class="disclaimer">
+            By sending a message to Study-Work Balance Support, you agree to the 
+            <span class="fake-link" onclick="openModal('terms')">terms</span> and confirm that you have read the 
+            <span class="fake-link" onclick="openModal('privacy')">privacy policy</span>. 
+            See <span class="fake-link" onclick="openModal('cookies')">cookie settings</span>.
+        </p>
         </div>
 
     </div><!-- .chat-container -->
+
+    <!-- WARNING POPUP -->
+    <div id="warning-popup" class="popup hidden">
+    <p>
+        Do not share sensitive information. Conversations may be reviewed for security purposes and to prevent misuse. 
+        <span class="fake-link" onclick="openModal('learn')">Learn more</span>.
+    </p>
+    <button onclick="closePopup()">OK</button>
+    </div>
+
+<!-- MODALS -->
+    <div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()"></div>
+
+    <div id="modal" class="modal hidden">
+        <div class="modal-header">
+            <span id="modal-title">Title</span>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-content" id="modal-content">
+            Content goes here
+        </div>
+    </div>    
 
     <script>
         const BACKEND = 'http://localhost:5000';
@@ -855,6 +1007,15 @@
         const sessionId = 'session_' + Date.now();
 
         let ttsMode = 'none';
+
+        let warningShown = false;
+        function showWarningPopup() {
+            document.getElementById("warning-popup").classList.remove("hidden");
+        }
+        function closePopup() {
+            document.getElementById("warning-popup").classList.add("hidden");
+        }
+
         let voicesList = [];
         let panelOpen = false;
 
@@ -1113,6 +1274,12 @@
 
         // ── Send message ──────────────────────────────────────────────────────────
         async function sendMessage() {
+
+            if (!warningShown) {
+                showWarningPopup();
+                warningShown = true;
+            }
+
             const message = messageInput.value.trim();
             const apiKey = document.getElementById('apiKeyInput').value.trim();
 
@@ -1238,6 +1405,45 @@
         });
 
         window.onload = () => messageInput.focus();
+
+        // MODAL CONTENT DEFINITIONS
+        const modalData = {
+            terms: {
+                title: "Terms of Use",
+                content: "This chatbot is a prototype designed for supportive conversations. It does not replace professional advice. By using it, you agree to use it responsibly."
+            },
+            privacy: {
+                title: "Privacy Policy",
+                content: "This prototype may process and store conversations for demonstration purposes. Avoid sharing personal or sensitive information."
+            },
+            cookies: {
+                title: "Cookie Settings",
+                content: "This prototype may use local storage to remember settings such as your API key and voice preferences."
+            },
+            learn: {
+                title: "About Your Data",
+                content: "Conversations may be reviewed to improve the system and ensure safe usage. Please avoid sharing sensitive personal data."
+            }
+        };
+
+            // OPEN MODAL
+            function openModal(type) {
+                const modal = document.getElementById("modal");
+                const overlay = document.getElementById("modal-overlay");
+
+                document.getElementById("modal-title").textContent = modalData[type].title;
+                document.getElementById("modal-content").textContent = modalData[type].content;
+
+                modal.classList.remove("hidden");
+                overlay.classList.remove("hidden");
+            }
+
+        // CLOSE MODAL
+        function closeModal() {
+            document.getElementById("modal").classList.add("hidden");
+            document.getElementById("modal-overlay").classList.add("hidden");
+        }
+
     </script>
 </body>
 

@@ -6,6 +6,103 @@ import requests
 import uuid
 import threading
 import queue
+import re
+
+HIGH_RISK_PATTERNS = [
+    "i want to die",
+    "i want to end it",
+    "i'm going to kill myself",
+    "thinking about ending it all",
+    "i can't take it anymore",
+    "i don't want to exist",
+    "everyone would be better off without me",
+]
+
+MEDIUM_RISK_PATTERNS = [
+    "what's the point",
+    "nothing matters anymore",
+    "i feel empty",
+    "i feel trapped",
+    "i can't keep doing this",
+    "i'm so tired of everything",
+    "i wish i could just sleep forever",
+]
+
+def normalize(text):
+    return text.lower().strip()
+
+def fuzzy_match(text, pattern):
+    pattern = pattern.replace(" ", r"\s+")
+    return re.search(pattern, text)
+
+def detect_risk_level(user_input):
+    text = normalize(user_input)
+
+    for phrase in HIGH_RISK_PATTERNS:
+        if fuzzy_match(text, phrase):
+            return "high"
+
+    for phrase in MEDIUM_RISK_PATTERNS:
+        if fuzzy_match(text, phrase):
+            return "medium"
+
+    return "low"
+
+def escalate_with_context(risk, user_input):
+    text = normalize(user_input)
+
+    if risk == "medium" and "anymore" in text:
+        return "high"
+
+    return risk
+
+
+# ── Crisis Contacts ──────────────────────────────────────────────────────────
+
+CRISIS_CONTACTS = {
+    "FI": {
+        "name": "MIELI Mental Health Finland Crisis Helpline",
+        "phone": "+358 9 2525 0111",
+        "chat": "https://mieli.fi/en/crisis-helpline/",
+    },
+    "US": {
+        "name": "988 Suicide & Crisis Lifeline",
+        "phone": "988",
+        "chat": "https://988lifeline.org/",
+    },
+}
+
+def resolve_country(request):
+    try:
+        ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+        if ip and "," in ip:
+            ip = ip.split(",")[0].strip()
+
+        ip_country = get_country_from_ip(ip)
+
+        locale = request.headers.get("Accept-Language", "")
+        locale_country = None
+
+        match = re.search(r'-([A-Z]{2})', locale, re.I)
+        if match:
+            locale_country = match.group(1).upper()
+
+        country = ip_country or locale_country
+
+        return country if country in CRISIS_CONTACTS else "FI"
+
+    except:
+        return "FI"
+
+def build_crisis_response(contact):
+    return (
+        "I’m really sorry you’re feeling this way.\n\n"
+        "I can’t continue this conversation, but you can reach out here right now:\n"
+        f"{contact['name']}: {contact['phone']}\n{contact['chat']}\n\n"
+        "If you're in immediate danger, call your local emergency number."
+
+        )
+
 
 from personas import build_few_shot_block, build_archetype_overview
 
@@ -137,6 +234,7 @@ def generate_audio(text: str):
 
 # ── Conversation ───────────────────────────────────────────────────────────────
 conversation_sessions = {}
+session_states = {}
 
 def _build_system_prompt() -> str:
     return f"""You are a supportive, empathetic chatbot for students who combine work and studies.
@@ -250,6 +348,13 @@ def chat():
         data          = request.json
         user_message  = data.get('message', '').strip()
         session_id    = data.get('session_id', 'default')
+
+        if session_id in session_states and session_states[session_id] == "closed":
+            return jsonify({
+                'response': "This conversation has been closed. Please reach out to a support service.",
+                'risk_level': 'closed'
+            })
+
         tts_requested = data.get('tts', True)
         api_key       = data.get('api_key', '').strip()
 
@@ -258,6 +363,27 @@ def chat():
 
         if session_id not in conversation_sessions:
             conversation_sessions[session_id] = []
+
+        risk = detect_risk_level(user_message)
+        risk = escalate_with_context(risk, user_message)
+        country_debug = resolve_country(request)
+        safe_print(f"DEBUG: detected country = {country_debug}")
+
+        if risk == "high":
+            country = resolve_country(request)
+            contact = get_crisis_contact(country)
+
+            bot_response = build_crisis_response(contact)
+
+            # Mark session as closed
+            session_states[session_id] = "closed"
+
+            return jsonify({
+                'response': bot_response,
+                'audio_url': audio_url,
+                'tts_enabled': TTS_ENABLED,
+                'risk_level': 'high'
+            })
 
         bot_response = get_ai_response(user_message, conversation_sessions[session_id], api_key)
 
